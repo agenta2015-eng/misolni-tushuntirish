@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -62,12 +23,12 @@
             display: grid;
             grid-template-columns: 1fr 3fr 1fr;
             grid-template-rows: auto auto auto auto auto;
-            gap: 6px;
+            gap: 8px;
             align-items: center;
             justify-items: center;
             background: white;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             max-width: 95vw;
             max-height: 95vh;
@@ -79,9 +40,9 @@
             grid-column: 2;
             grid-row: 2;
             width: 100%;
-            max-width: 180px;
-            height: 160px;
-            perspective: 600px;
+            max-width: 200px;
+            height: 180px;
+            perspective: 800px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,41 +59,41 @@
        
         .cube {
             position: absolute;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             transform-style: preserve-3d;
         }
        
         .face {
             position: absolute;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: 1px solid #2d3748;
             background: #8b5cf6;
             opacity: 0.9;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(10px, 2.5vw, 11px);
+            font-size: clamp(11px, 2.5vw, 12px);
             color: white;
             font-weight: bold;
         }
        
-        .front { transform: translateZ(14px); }
-        .back { transform: translateZ(-14px) rotateY(180deg); }
-        .right { transform: rotateY(90deg) translateZ(14px); }
-        .left { transform: rotateY(-90deg) translateZ(14px); }
-        .top { transform: rotateX(90deg) translateZ(14px); }
-        .bottom { transform: rotateX(-90deg) translateZ(14px); }
+        .front { transform: translateZ(16px); }
+        .back { transform: translateZ(-16px) rotateY(180deg); }
+        .right { transform: rotateY(90deg) translateZ(16px); }
+        .left { transform: rotateY(-90deg) translateZ(16px); }
+        .top { transform: rotateX(90deg) translateZ(16px); }
+        .bottom { transform: rotateX(-90deg) translateZ(16px); }
        
-        .cube1 { transform: translate3d(-42px, 14px, -14px); }
-        .cube2 { transform: translate3d(-14px, -14px, -14px); }
-        .cube3 { transform: translate3d(14px, 14px, -14px); }
-        .cube4 { transform: translate3d(-42px, 14px, 14px); }
-        .cube5 { transform: translate3d(-14px, 14px, 14px); }
-        .cube7 { transform: translate3d(-42px, -14px, -14px); }
-        .cube8 { transform: translate3d(-14px, -42px, -14px); }
-        .cube10 { transform: translate3d(-14px, 14px, -14px); }
+        .cube1 { transform: translate3d(-48px, 16px, -16px); }
+        .cube2 { transform: translate3d(-16px, -16px, -16px); }
+        .cube3 { transform: translate3d(16px, 16px, -16px); }
+        .cube4 { transform: translate3d(-48px, 16px, 16px); }
+        .cube5 { transform: translate3d(-16px, 16px, 16px); }
+        .cube7 { transform: translate3d(-48px, -16px, -16px); }
+        .cube8 { transform: translate3d(-16px, -48px, -16px); }
+        .cube10 { transform: translate3d(-16px, 16px, -16px); }
        
         .view-panel {
             display: flex;
@@ -145,7 +106,7 @@
         .view-panel h4 {
             color: #4a5568;
             margin: 2px 0;
-            font-size: clamp(9px, 2.5vw, 11px);
+            font-size: clamp(10px, 2.5vw, 12px);
             text-align: center;
             font-weight: bold;
         }
@@ -162,40 +123,32 @@
         .instruction { 
             grid-column: 1 / 4; 
             grid-row: 5; 
-            font-size: clamp(9px, 2.5vw, 11px); 
+            font-size: clamp(10px, 2.5vw, 12px); 
             color: #4a5568;
             text-align: center;
             font-weight: bold;
         }
        
-        .top-view .view-grid {
-            grid-template-columns: repeat(3, 22px);
-            grid-template-rows: repeat(2, 22px);
-        }
-       
-        .left-view .view-grid {
-            grid-template-columns: repeat(2, 22px);
-            grid-template-rows: repeat(3, 22px);
-        }
-       
-        .right-view .view-grid {
-            grid-template-columns: repeat(2, 22px);
-            grid-template-rows: repeat(3, 22px);
-        }
-       
+        .top-view .view-grid,
         .bottom-view .view-grid {
-            grid-template-columns: repeat(3, 22px);
-            grid-template-rows: repeat(2, 22px);
+            grid-template-columns: repeat(3, 24px);
+            grid-template-rows: repeat(2, 24px);
+        }
+       
+        .left-view .view-grid,
+        .right-view .view-grid {
+            grid-template-columns: repeat(2, 24px);
+            grid-template-rows: repeat(3, 24px);
         }
        
         .view-cube {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border: 1px solid #2d3748;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(7px, 2vw, 9px);
+            font-size: clamp(8px, 2vw, 10px);
             font-weight: bold;
         }
        
@@ -216,13 +169,13 @@
         .reset-button {
             grid-column: 2;
             grid-row: 4;
-            padding: 6px 12px;
+            padding: 8px 16px;
             background: #4a5568;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: clamp(10px, 3vw, 12px);
+            font-size: clamp(11px, 3vw, 13px);
             transition: background 0.2s;
             font-weight: bold;
         }
@@ -231,118 +184,133 @@
             background: #2d3748;
         }
 
-        @media (max-width: 500px) {
+        /* Tablet (501px - 768px) */
+        @media (max-width: 768px) {
             .main-container {
                 grid-template-columns: 1fr 2.5fr 1fr;
-                gap: 5px;
-                padding: 8px;
+                gap: 6px;
+                padding: 10px;
                 max-height: 90vh;
             }
             
             .scene {
-                max-width: 140px;
-                height: 120px;
+                max-width: 160px;
+                height: 140px;
+                perspective: 600px;
             }
 
             .cube, .face {
-                width: 22px;
-                height: 22px;
+                width: 26px;
+                height: 26px;
             }
 
-            .front { transform: translateZ(11px); }
-            .back { transform: translateZ(-11px) rotateY(180deg); }
-            .right { transform: rotateY(90deg) translateZ(11px); }
-            .left { transform: rotateY(-90deg) translateZ(11px); }
-            .top { transform: rotateX(90deg) translateZ(11px); }
-            .bottom { transform: rotateX(-90deg) translateZ(11px); }
+            .front { transform: translateZ(13px); }
+            .back { transform: translateZ(-13px) rotateY(180deg); }
+            .right { transform: rotateY(90deg) translateZ(13px); }
+            .left { transform: rotateY(-90deg) translateZ(13px); }
+            .top { transform: rotateX(90deg) translateZ(13px); }
+            .bottom { transform: rotateX(-90deg) translateZ(13px); }
 
-            .cube1 { transform: translate3d(-33px, 11px, -11px); }
-            .cube2 { transform: translate3d(-11px, -11px, -11px); }
-            .cube3 { transform: translate3d(11px, 11px, -11px); }
-            .cube4 { transform: translate3d(-33px, 11px, 11px); }
-            .cube5 { transform: translate3d(-11px, 11px, 11px); }
-            .cube7 { transform: translate3d(-33px, -11px, -11px); }
-            .cube8 { transform: translate3d(-11px, -33px, -11px); }
-            .cube10 { transform: translate3d(-11px, 11px, -11px); }
+            .cube1 { transform: translate3d(-39px, 13px, -13px); }
+            .cube2 { transform: translate3d(-13px, -13px, -13px); }
+            .cube3 { transform: translate3d(13px, 13px, -13px); }
+            .cube4 { transform: translate3d(-39px, 13px, 13px); }
+            .cube5 { transform: translate3d(-13px, 13px, 13px); }
+            .cube7 { transform: translate3d(-39px, -13px, -13px); }
+            .cube8 { transform: translate3d(-13px, -39px, -13px); }
+            .cube10 { transform: translate3d(-13px, 13px, -13px); }
 
             .view-cube {
-                width: 18px;
-                height: 18px;
-                font-size: clamp(6px, 1.8vw, 7px);
+                width: 20px;
+                height: 20px;
+                font-size: clamp(7px, 1.8vw, 9px);
             }
 
             .top-view .view-grid,
             .bottom-view .view-grid {
-                grid-template-columns: repeat(3, 18px);
-                grid-template-rows: repeat(2, 18px);
+                grid-template-columns: repeat(3, 20px);
+                grid-template-rows: repeat(2, 20px);
             }
 
             .left-view .view-grid,
             .right-view .view-grid {
-                grid-template-columns: repeat(2, 18px);
-                grid-template-rows: repeat(3, 18px);
+                grid-template-columns: repeat(2, 20px);
+                grid-template-rows: repeat(3, 20px);
+            }
+
+            .reset-button {
+                padding: 6px 12px;
+            }
+
+            .instruction {
+                font-size: clamp(9px, 2vw, 10px);
+            }
+        }
+
+        /* Phone (≤500px) */
+        @media (max-width: 500px) {
+            .main-container {
+                grid-template-columns: 1fr 2fr 1fr;
+                gap: 5px;
+                padding: 8px;
+                max-height: 85vh;
+            }
+            
+            .scene {
+                max-width: 120px;
+                height: 100px;
+                perspective: 500px;
+            }
+
+            .cube, .face {
+                width: 20px;
+                height: 20px;
+            }
+
+            .front { transform: translateZ(10px); }
+            .back { transform: translateZ(-10px) rotateY(180deg); }
+            .right { transform: rotateY(90deg) translateZ(10px); }
+            .left { transform: rotateY(-90deg) translateZ(10px); }
+            .top { transform: rotateX(90deg) translateZ(10px); }
+            .bottom { transform: rotateX(-90deg) translateZ(10px); }
+
+            .cube1 { transform: translate3d(-30px, 10px, -10px); }
+            .cube2 { transform: translate3d(-10px, -10px, -10px); }
+            .cube3 { transform: translate3d(10px, 10px, -10px); }
+            .cube4 { transform: translate3d(-30px, 10px, 10px); }
+            .cube5 { transform: translate3d(-10px, 10px, 10px); }
+            .cube7 { transform: translate3d(-30px, -10px, -10px); }
+            .cube8 { transform: translate3d(-10px, -30px, -10px); }
+            .cube10 { transform: translate3d(-10px, 10px, -10px); }
+
+            .view-cube {
+                width: 16px;
+                height: 16px;
+                font-size: clamp(6px, 1.5vw, 7px);
+            }
+
+            .top-view .view-grid,
+            .bottom-view .view-grid {
+                grid-template-columns: repeat(3, 16px);
+                grid-template-rows: repeat(2, 16px);
+            }
+
+            .left-view .view-grid,
+            .right-view .view-grid {
+                grid-template-columns: repeat(2, 16px);
+                grid-template-rows: repeat(3, 16px);
+            }
+
+            .view-panel h4 {
+                font-size: clamp(8px, 2vw, 9px);
             }
 
             .reset-button {
                 padding: 5px 10px;
+                font-size: clamp(9px, 2.5vw, 10px);
             }
 
             .instruction {
-                font-size: clamp(8px, 2vw, 9px);
-            }
-        }
-
-        @media (max-width: 400px) {
-            .main-container {
-                grid-template-columns: 1fr 2fr 1fr;
-                padding: 6px;
-            }
-            
-            .scene {
-                max-width: 110px;
-                height: 100px;
-            }
-
-            .cube, .face {
-                width: 18px;
-                height: 18px;
-            }
-
-            .front { transform: translateZ(9px); }
-            .back { transform: translateZ(-9px) rotateY(180deg); }
-            .right { transform: rotateY(90deg) translateZ(9px); }
-            .left { transform: rotateY(-90deg) translateZ(9px); }
-            .top { transform: rotateX(90deg) translateZ(9px); }
-            .bottom { transform: rotateX(-90deg) translateZ(9px); }
-
-            .cube1 { transform: translate3d(-27px, 9px, -9px); }
-            .cube2 { transform: translate3d(-9px, -9px, -9px); }
-            .cube3 { transform: translate3d(9px, 9px, -9px); }
-            .cube4 { transform: translate3d(-27px, 9px, 9px); }
-            .cube5 { transform: translate3d(-9px, 9px, 9px); }
-            .cube7 { transform: translate3d(-27px, -9px, -9px); }
-            .cube8 { transform: translate3d(-9px, -27px, -9px); }
-            .cube10 { transform: translate3d(-9px, 9px, -9px); }
-
-            .view-cube {
-                width: 14px;
-                height: 14px;
-                font-size: clamp(5px, 1.5vw, 6px);
-            }
-
-            .top-view .view-grid,
-            .bottom-view .view-grid {
-                grid-template-columns: repeat(3, 14px);
-                grid-template-rows: repeat(2, 14px);
-            }
-
-            .left-view .view-grid,
-            .right-view .view-grid {
-                grid-template-columns: repeat(2, 14px);
-                grid-template-rows: repeat(3, 14px);
-            }
-
-            .view-panel h4 {
                 font-size: clamp(8px, 2vw, 9px);
             }
         }
